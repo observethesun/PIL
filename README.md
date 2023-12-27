@@ -1,4 +1,7 @@
-# Machine Learning for Reconstruction of Polarity Inversion Lines from Solar Filaments
+[![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://python.org)
+[![Pytorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)](https://pytorch.org)
+
+## Machine Learning for Reconstruction of Polarity Inversion Lines from Solar Filaments
 
 This repository contains the code for the scientific paper "Machine Learning for Reconstruction of Polarity Inversion Lines from Solar Filaments". It includes datasets, neural network models, and scripts used in the study, aiming to reconstruct the Sun's magnetic neutral lines using machine learning techniques.
 
@@ -16,7 +19,7 @@ This repository contains the code for the scientific paper "Machine Learning for
 
 - **requirements.txt**: A text file listing the necessary Python modules.
 
-## Getting Started
+### Getting Started
 
 1. **Clone the Repository**: To get started with the code and models in this repository, first clone it using git:
 
@@ -39,10 +42,12 @@ This repository contains the code for the scientific paper "Machine Learning for
 
 6. **Review Results**: Check the `results/` directory to see the outputs, including averaged predictions, error metrics, and mean prediction tensors, described in our article.
 
-## Usage Example
+### Usage Example
 
 The `demo.ipynb` notebook provides a comprehensive example of how to use the neural network for predicting polarity inversion lines from solar filaments. Follow the steps and code cells within the notebook for a guided experience.
 
-## Citation
+### Citing this work
 
-If you use the code or models from this repository in your research, please cite the accompanying scientific paper:
+```
+Kisielius, V., Illarionov, E. Machine Learning for Reconstruction of Polarity Inversion Lines from Solar Filaments. Sol Phys ...............
+```
