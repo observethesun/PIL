@@ -4,7 +4,7 @@ This repository contains the code for the scientific paper "Machine Learning for
 
 ## Repository Structure
 
-- **McIntosh_data/**: This directory is intended for storing FITS images or other image formats to be processed by the neural network. Ensure that the images are named and formatted correctly before processing.
+- **McIntosh_data/**: This directory is intended for storing FITS images or other image formats to be processed by the neural network.
 - **results/**: This directory contains four archives with the averaged predictions, tables of errors, and the tensors of mean predictions in `mean_predictions_*.pt` format. 
 - **scripts/**: Includes various Python scripts essential for running and managing the neural network model:
   - `config.py`: Contains global parameters and settings for the model.
@@ -14,11 +14,7 @@ This repository contains the code for the scientific paper "Machine Learning for
 
 - **demo.ipynb**: A Jupyter notebook that provides an example of how to use the model with a step-by-step guide.
 
-- **requirements.txt**: A text file listing the necessary Python modules. Install them using the command below:
-
-```bash
-pip install -r requirements.txt
-```
+- **requirements.txt**: A text file listing the necessary Python modules.
 
 ## Getting Started
 
@@ -35,7 +31,7 @@ pip install -r requirements.txt
     pip install -r requirements.txt
     ```
 
-3. **Prepare Your Data**: Place your FITS images or other appropriate files into the `McIntosh_data/` directory, ensuring they adhere to the expected naming conventions and formats.
+3. **Prepare Your Data**: Place your FITS images or other appropriate files into the `McIntosh_data/` directory. You can find more data [here](https://www2.hao.ucar.edu/mcintosh-archive)
 
 4. **Run the Scripts**: Execute the scripts located in the `scripts/` directory to preprocess your data, train the model, or generate predictions. Ensure to review `config.py` for any configurations specific to your environment or data.
 
