@@ -1,0 +1,1 @@
+### Put the McIntosh FITS files in this folder. You can find them [here](https://www2.hao.ucar.edu/mcintosh-archive).
