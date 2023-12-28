@@ -1,1 +1,3 @@
 .venv/
+scripts/__pycache__/
+mean_predictions_31.pt

@@ -105,10 +105,17 @@ class ImageData:
             f'bound length: {self.bound_length}\n'
             f'percent of bound pixels: {100 * self.bound_length / self.total_pixel:.1f}%')
 
-    def show_image(self, figsize=(10, 5), cmap='PuOr'):
+    def show_input_img(self, figsize=(10, 5), cmap='PuOr'):
         plt.figure(figsize=figsize)
-        plt.title(f'Data visualization')
+        plt.title(f'Input data visualization')
         plt.imshow(self.img_array, cmap=cmap, vmin=-1, vmax=1)
+
+    def show_target_img(self, figsize=(10, 5), cmap='PuOr'):
+        if self.target_img is None:
+            raise ValueError('Target image is not defined')
+        plt.figure(figsize=figsize)
+        plt.title(f'Target data visualization')
+        plt.imshow(self.target_img, cmap=cmap, vmin=-1, vmax=1)
 
     def show_3d(self, marker_size=2, colorscale='oxy'):
         plot_3d_tensor(tensor=self.data_3d,
