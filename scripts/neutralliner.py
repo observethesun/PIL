@@ -71,18 +71,25 @@ class NeutralLiner(nn.Module):
             device: str = 'cuda:0'
         ):
         super(NeutralLiner, self).__init__()
+        self.device = device
         self.net = nn.Sequential()
         for i in range(len(arch)-1):
             self.net.add_module(f'linear_{i}', nn.Linear(arch[i], arch[i+1]))
             self.net.add_module(f'tanh_{i}', nn.Tanh())
         self.arch = arch
         self.image_list = image_list
-        self.data_list = [img.data_3d if mode == '3d' else img.data_2d for img in image_list]
+        self.data_list = [img.data_3d.to(device) if mode == '3d' else img.data_2d.to(device) for img in image_list]
         self.lr = lr
         self.weight_decay = weight_decay
-        self.device = device
         self.optimizer = torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
         self.help_step_size = help_step_size
+        if self.help_step_size is not None:
+            x = np.arange(self.help_step_size//2, 512, self.help_step_size)
+            y = np.arange(self.help_step_size//2, 256, self.help_step_size)
+            x, y = np.meshgrid(x, y)
+            self.x = x
+            self.y = y # IT NEEDS TO BE FIXED FOR LIST OF IMAGES
+            self.targets = [torch.from_numpy(img.target_img[y, x]).to(self.device).float() for img in self.image_list]
         self.loss_dict = {key: [] for key in LOSSES}
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -190,9 +197,8 @@ class NeutralLiner(nn.Module):
         if clear_loss:
             for value in self.loss_dict.values():
                 value.clear()
-        data_list = [data.to(self.device) for data in self.data_list]
         for epoch in range(1, num_epochs + 1):
-            output_list = [self(data) for data in data_list]
+            output_list = [self(data) for data in self.data_list]
             self.optimizer.zero_grad()
             loss = self.compute_loss(output_list=output_list, f_integral_weight=f_integral_weight)
             loss.backward(retain_graph=True)
@@ -230,7 +236,7 @@ class NeutralLiner(nn.Module):
                 ax4.get_yaxis().set_ticks([])
                 ax4.title.set_text(f'Target image №{i + 1}')
                 ax4.imshow(data.target_img, cmap='PuOr', vmin=-1, vmax=1)
-        if path_to_save:
+        if path_to_save is not None:
             plt.savefig(path_to_save + '/epoch%06d.png' % epoch)
         plt.show()
 
@@ -252,9 +258,9 @@ class NeutralLiner(nn.Module):
         full_path_to_save : str | None
             Full path to the directory to save the plots on test to.
         """
-        input_list = self.data_list if input_list is None else input_list
+        input_list = self.data_list if input_list is None else input_list.to(self.device)
         with torch.no_grad():
-            output_list = [self(inpt.to(self.device)).cpu().detach() for inpt in input_list]
+            output_list = [self(inpt).cpu().detach() for inpt in input_list]
         if need_plot or full_path_to_save:
             plt.figure(figsize=(10, 18))
             for (i, output), img in zip(enumerate(output_list), self.image_list):
@@ -292,10 +298,10 @@ class NeutralLiner(nn.Module):
         input_list : List[torch.Tensor] | None
             List of input tensors of coordinates.
         """
-        batch_list = self.data_list if input_list is None else input_list
+        batch_list = self.data_list if input_list is None else input_list.to(self.device)
         for batch in batch_list:
             batch.requires_grad_()
-        tmp_list = [self(batch.to(self.device)) for batch in batch_list]
+        tmp_list = [self(batch) for batch in batch_list]
         for tmp in tmp_list:
             tmp.sum().backward()
         grad_out_list = [batch.grad.cpu() for batch in batch_list]
@@ -340,7 +346,7 @@ class NeutralLiner(nn.Module):
         """
         loss, f_abs_integral, bound_integral, orientation_integral, f_integral, MSE_help = torch.zeros(len(self.loss_dict))
         loss_, f_abs_integral_, bound_integral_, orientation_integral_, f_integral_, MSE_help_ = torch.zeros(len(self.loss_dict))
-        for (output, img) in zip(output_list, self.image_list):
+        for (output, img, target) in zip(output_list, self.image_list, self.targets):
             output = output.flatten()
             for key in self.loss_dict.keys():
                 locals()[key + "_"] = locals()[key].clone()
@@ -354,8 +360,9 @@ class NeutralLiner(nn.Module):
             loss = loss_ + f_abs_integral + bound_integral + orientation_integral + f_integral
             if self.help_step_size is not None:
                 MSE_help = MSE_help_ + nn.functional.mse_loss(
-                    output.view(img.img_array.shape)[help_size:-help_size, :][::self.help_step_size, ::self.help_step_size],
-                    torch.FloatTensor(img.target_img[help_size:-help_size, :]).to(self.device)[::self.help_step_size, ::self.help_step_size])
+                    output.view(img.img_array.shape)[self.y, self.x],
+                    target)
+                    # torch.FloatTensor(img.target_img[help_size:-help_size, :]).to(self.device)[::self.help_step_size, ::self.help_step_size])
                 loss += MSE_help
         for key in self.loss_dict.keys():
             self.loss_dict[key].append(locals()[key].item())
