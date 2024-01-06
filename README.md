@@ -36,7 +36,7 @@ This repository contains the source code for the paper "Machine Learning for Rec
     pip install -r requirements.txt
     ```
 
-3. **Prepare Your Data**: Place your FITS images or other appropriate files into the `McIntosh_data/` directory. You can find more data [here](https://www2.hao.ucar.edu/mcintosh-archive)
+3. **Prepare Your Data**: Place your FITS images or other appropriate files into the `McIntosh_data/` directory.
 
 4. **Check config**: Ensure to review `config.py` for any configurations specific to your environment or data.
 
