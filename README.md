@@ -45,5 +45,5 @@ This repository contains the source code for the paper "Machine Learning for Rec
 ### Citing this work
 
 ```
-Kisielius, V., Illarionov, E. Machine Learning for Reconstruction of Polarity Inversion Lines from Solar Filaments. 2023.
+Kisielius, V., Illarionov, E. Machine Learning for Reconstruction of Polarity Inversion Lines from Solar Filaments. Sol Phys 299, 69 (2024). https://doi.org/10.1007/s11207-024-02324-9
 ```
